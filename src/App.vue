@@ -6,17 +6,12 @@
 
         <li class="lista-fotos-item" v-for="foto of fotos">
 
-          <div class="painel">
+          <meu-painel :titulo="foto.titulo">
 
-            <h2 class="painel-titulo">{{ foto.titulo }}</h2>
+            <img class="imagem-responsiva" v-bind:src="foto.url" :alt="foto.titulo">
+              <!-- dentro do atributo, nao é possível usar a interpolação, entao tem que usar o v-bind. Um atalho para v-bind é usar apenas o : (como em :alt) -->      
 
-            <div class="painel-corpo">
-              <img class="imagem-responsiva" v-bind:src="foto.url" :alt="foto.titulo">
-              <!-- dentro do atributo, nao é possível usar a interpolação, entao tem que usar o v-bind. Um atalho para v-bind é usar apenas o : (como em :alt) -->           
-            </div>
-
-          </div>
-
+          </meu-painel>
        
         </li>
 
@@ -26,7 +21,14 @@
 </template>
 
 <script>
+import Painel from './components/shared/painel/Painel.vue'
+
 export default {
+
+  components: {
+    'meu-painel': Painel
+  },
+
   data() {
     return {
       titulo: 'Alurapic',
@@ -46,6 +48,7 @@ export default {
 </script>
 
 <style>
+
   .corpo {
     font-family: Arial, Helvetica, sans-serif;
     width: 96%;
@@ -68,27 +71,4 @@ export default {
     width: 100%;
   }
 
-  /* estilo do painel */ 
-
-   .painel {
-    padding: 0 auto;
-    border: solid 2px grey;
-    display: inline-block;
-    margin: 5px;
-    box-shadow: 5px 5px 10px grey;
-    width: 200px;
-    height: 100%;
-    vertical-align: top;
-    text-align: center;
-  }
-
-  .painel .painel-titulo {
-    text-align: center;
-    border: solid 2px;
-    background: lightblue;
-    margin: 0 0 15px 0;
-    padding: 10px;
-    text-transform: uppercase;
-  }
-  
 </style>
