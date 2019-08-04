@@ -1,16 +1,14 @@
 <template>
   <div class="corpo">
     <h1 class="centralizado">{{ titulo }}</h1>
+      <input type="search" class="filtro" v-on:input="filtro = $event.target.value" placeholder="filtre pelo título da foto">
 
       <ul class="lista-fotos">
 
-        <li class="lista-fotos-item" v-for="foto of fotos">
+        <li class="lista-fotos-item" v-for="foto of fotosComFiltro" :key="foto._id">
 
           <meu-painel :titulo="foto.titulo">
-
-            <img class="imagem-responsiva" v-bind:src="foto.url" :alt="foto.titulo">
-              <!-- dentro do atributo, nao é possível usar a interpolação, entao tem que usar o v-bind. Um atalho para v-bind é usar apenas o : (como em :alt) -->      
-
+            <imagem-responsiva :url="foto.url" :titulo="foto.titulo"/>
           </meu-painel>
        
         </li>
@@ -21,18 +19,34 @@
 </template>
 
 <script>
-import Painel from './components/shared/painel/Painel.vue'
+import Painel from './components/shared/painel/Painel.vue';
+import ImagemResponsiva from './components/shared/imagem-responsiva/imagemResponsiva.vue';
 
 export default {
 
   components: {
-    'meu-painel': Painel
+    'meu-painel': Painel,
+    'imagem-responsiva': ImagemResponsiva
   },
 
   data() {
     return {
       titulo: 'Alurapic',
-      fotos: []
+      fotos: [],
+      filtro: ''
+    }
+  },
+
+  computed: {
+    fotosComFiltro() {
+      if (this.filtro) {
+        // filtra a lista
+        let exp = new RegExp(this.filtro.trim(), 'i');
+        return this.fotos.filter(foto => exp.test(foto.titulo));
+      } else {
+        // se o campo estiver vazio, não filtramos, retornamos a lista completa
+        return this.fotos;
+      }
     }
   },
 
@@ -67,7 +81,8 @@ export default {
     display: inline-block;
   }
 
-  .imagem-responsiva {
+  .filtro {
+    display: block;
     width: 100%;
   }
 
