@@ -28,6 +28,9 @@
 import Painel from '../shared/painel/Painel.vue';
 import ImagemResponsiva from '../shared/imagem-responsiva/imagemResponsiva.vue';
 import Botao from '../shared/botao/Botao.vue';
+// importando FotoService
+import FotoService from '../../domain/foto/FotoService';
+
 
 export default {
 
@@ -59,26 +62,39 @@ export default {
     }
   },
 
+
   methods: {
+
     remove(foto) {
 
-        // a chave do objeto é o parâmetro usando no endereço do recurso 
-
-      this.resource.delete({id: foto._id})
-      .then(
-        () => {
-          let indice = this.fotos.indexOf(foto); // acha a posição da foto na lista
-          this.fotos.splice(indice, 1); // a instrução altera o array
-          this.mensagem = 'Foto removida com sucesso'
-        }, 
-        err => {
-          this.mensagem = 'Não foi possível remover a foto';
-          console.log(err);
-        }
+      this.service
+        .apaga(foto._id)
+        .then(
+          () => {
+            let indice = this.fotos.indexOf(foto);
+            this.fotos.splice(indice, 1);
+            this.mensagem = 'Foto removida com sucesso'
+          }, 
+          err => {
+            this.mensagem = 'Não foi possível remover a foto';
+            console.log(err);
+          }
         )
     }
   },
 
+  created() {
+
+    // criando uma instância do nosso serviço que depende de $resource
+    this.service = new FotoService(this.$resource);
+
+    this.service
+      .lista()
+      .then(fotos => this.fotos = fotos, err => console.log(err));
+    }
+}
+
+/*
   created(){
 
     this.resource = this.$resource('v1/fotos{/id}');
@@ -88,7 +104,7 @@ export default {
       .then(res => res.json())
       .then(fotos => this.fotos = fotos, err => console.log(err));
 
-    /*
+    
     this.$http
       .get('v1/fotos')
       .then(res => res.json())
@@ -101,9 +117,10 @@ export default {
       .then(res => res.json()) 
       // res.json também é uma promise
       .then(fotos => this.fotos = fotos, err => console.log(err));
-    */
+    
   }
-}
+}*/
+
 </script>
 
 <style>
