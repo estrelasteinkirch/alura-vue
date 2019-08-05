@@ -61,29 +61,47 @@ export default {
 
   methods: {
     remove(foto) {
-        this.$http
-        .delete(`http://localhost:3000/v1/fotos/${foto._id}`)
-        .then(
-          () => {
-            let indice = this.fotos.indexOf(foto); // acha a posição da foto na lista
-            this.fotos.splice(indice, 1); // a instrução altera o array
-            this.mensagem = 'Foto removida com sucesso'
-          }, 
-          err => {
-            this.mensagem = 'Não foi possível remover a foto';
-            console.log(err);
-          }
+
+        // a chave do objeto é o parâmetro usando no endereço do recurso 
+
+      this.resource.delete({id: foto._id})
+      .then(
+        () => {
+          let indice = this.fotos.indexOf(foto); // acha a posição da foto na lista
+          this.fotos.splice(indice, 1); // a instrução altera o array
+          this.mensagem = 'Foto removida com sucesso'
+        }, 
+        err => {
+          this.mensagem = 'Não foi possível remover a foto';
+          console.log(err);
+        }
         )
     }
   },
 
   created(){
-    let promise = this.$http.get('http://localhost:3000/v1/fotos');
+
+    this.resource = this.$resource('v1/fotos{/id}');
+
+    this.resource
+      .query()
+      .then(res => res.json())
+      .then(fotos => this.fotos = fotos, err => console.log(err));
+
+    /*
+    this.$http
+      .get('v1/fotos')
+      .then(res => res.json())
+      .then(fotos => this.fotos = fotos, err => console.log(err));
+      
+
+    let promise = this.$http.get('v1/fotos');
 
     promise
       .then(res => res.json()) 
       // res.json também é uma promise
       .then(fotos => this.fotos = fotos, err => console.log(err));
+    */
   }
 }
 </script>
