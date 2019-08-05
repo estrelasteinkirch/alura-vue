@@ -5,6 +5,7 @@ import VueResource from 'vue-resource';
 import VueRouter from 'vue-router';
 // tem que vir entre chaves, porque não é default
 import { routes } from './routes';
+import './directives/Transform';
 
 const router = new VueRouter({
   routes : routes,
