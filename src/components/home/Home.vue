@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1 class="centralizado">{{ titulo }}</h1>
+    <p v-show="mensagem" class="centralizado">{{ mensagem }}</p>
       <input type="search" class="filtro" v-on:input="filtro = $event.target.value" placeholder="filtre pelo título da foto">
 
       <ul class="lista-fotos">
@@ -8,7 +9,7 @@
         <li class="lista-fotos-item" v-for="foto of fotosComFiltro" :key="foto._id">
 
           <meu-painel :titulo="foto.titulo">
-            <imagem-responsiva v-meu-transform:scale.animate="1.3" :url="foto.url" :titulo="foto.titulo"/>
+            <imagem-responsiva v-meu-transform:rotate.animate="90" :url="foto.url" :titulo="foto.titulo"/>
             <meu-botao 
               tipo="botao" 
               rotulo="REMOVER" 
@@ -40,7 +41,8 @@ export default {
     return {
       titulo: 'Alurapic',
       fotos: [],
-      filtro: ''
+      filtro: '',
+      mensagem: ''
     }
   },
 
@@ -59,8 +61,19 @@ export default {
 
   methods: {
     remove(foto) {
-        alert('Remover a foto ' + foto.titulo);
-    
+        this.$http
+        .delete(`http://localhost:3000/v1/fotos/${foto._id}`)
+        .then(
+          () => {
+            let indice = this.fotos.indexOf(foto); // acha a posição da foto na lista
+            this.fotos.splice(indice, 1); // a instrução altera o array
+            this.mensagem = 'Foto removida com sucesso'
+          }, 
+          err => {
+            this.mensagem = 'Não foi possível remover a foto';
+            console.log(err);
+          }
+        )
     }
   },
 
