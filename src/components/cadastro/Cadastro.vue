@@ -8,13 +8,17 @@
     <form @submit.prevent="grava()">
       <div class="controle">
         <label for="titulo">TÍTULO</label>
-        <input v-model="foto.titulo" id="titulo" autocomplete="off">
+        <input name="titulo" data-vv-as="título" v-model="foto.titulo" id="titulo" autocomplete="off"
+        v-validate data-vv-rules="required|min:3|max:20">
+        <span class="erro" v-show="errors.has('titulo')">{{ errors.first('titulo') }}</span>
       </div>  
 
      <div class="controle">
         <label for="url">URL</label>
-        <input v-model.lazy="foto.url" id="url" autocomplete="off">
+        <input name="url" v-model="foto.url" id="url" autocomplete="off"
+        v-validate data-vv-rules="required">
         <imagem-responsiva v-show="foto.url" :url="foto.url" :titulo="foto.titulo"/>
+        <span class="erro" v-show="errors.has('url')">{{ errors.first('url') }}</span>
       </div>
 
       <div class="controle">
@@ -58,13 +62,21 @@ export default {
   methods: {
     
     grava() {
-      // o método save realiza um POST por debaixo dos panos enviado os dados passado como parâmetro
-      this.service
-        .cadastra(this.foto)
-        .then(() =>{
-          if(this.id) this.$router.push({ name: 'home'});
-          this.foto = new Foto();
-        }, err => console.log(err));
+
+      this.$validator
+        .validateAll()
+        .then(success => {
+
+          if(success){
+            // o método save realiza um POST por debaixo dos panos enviado os dados passado como parâmetro
+            this.service
+              .cadastra(this.foto)
+              .then(() =>{
+                if(this.id) this.$router.push({ name: 'home'});
+                this.foto = new Foto();
+              }, err => console.log(err));
+          }
+        })
     }
   },
 
@@ -103,6 +115,10 @@ export default {
 
   .centralizado {
     text-align: center;
+  }
+
+  .erro {
+    color: red;
   }
 
 </style>

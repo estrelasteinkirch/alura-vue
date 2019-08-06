@@ -6,10 +6,21 @@ import VueRouter from 'vue-router';
 // tem que vir entre chaves, porque não é default
 import { routes } from './routes';
 import './directives/Transform';
+import VeeValidate from 'vee-validate';
+import msg from './pt_BR';
 
 const router = new VueRouter({
   routes : routes,
   mode: 'history'
+});
+
+Vue.use(VeeValidate, {
+  locale: 'pt_BR',
+  dictionary: {
+    pt_BR: {
+      messages: msg
+    }
+  }
 });
 
 // registrando o router
@@ -17,6 +28,10 @@ Vue.use(VueRouter);
 
 Vue.use(VueResource); 
 Vue.http.options.root = 'http://localhost:3000';
+
+// registrando o plugin 
+Vue.use(VeeValidate);
+
 
 new Vue({
   el: '#app',
