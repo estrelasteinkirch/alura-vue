@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- <img src="/static/torta.jpg"/> Teste de importação da imagem -->
     <h1 class="centralizado">{{ titulo }}</h1>
     <p v-show="mensagem" class="centralizado">{{ mensagem }}</p>
       <input type="search" class="filtro" v-on:input="filtro = $event.target.value" placeholder="filtre pelo título da foto">
